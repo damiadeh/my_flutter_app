@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../product_manager.dart';
+import '../widgets/products/products.dart';
 
 class ProductsPage extends StatelessWidget {
-  final List<Map<String, String>> products;
-  final Function addProduct;
-  final Function deleteProduct;
+  final List<Map<String, dynamic>> products;
 
-  ProductsPage(this.products, this.addProduct, this.deleteProduct);
+  ProductsPage(this.products);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,8 @@ class ProductsPage extends StatelessWidget {
               title: Text('Choose'),
             ),
             ListTile(
-              title: Text('All Products'),
+              leading: Icon(Icons.edit),
+              title: Text('Manage Products'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/admin');
               },
@@ -30,8 +29,16 @@ class ProductsPage extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text('MeList'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              
+            },
+          ),
+        ],
       ),
-      body: ProductManager(products, addProduct, deleteProduct),
+      body: Products(products),
     );
   }
 }
