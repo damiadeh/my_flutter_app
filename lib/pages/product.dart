@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:scoped_model/scoped_model.dart';
+
 import 'package:flutter/material.dart';
-import 'package:my_app/widgets/ui_elements/title_default.dart' as prefix0;
-import '../widgets//ui_elements/title_default.dart';
+import 'package:my_app/widgets/ui_elements/title_default.dart';
+import '../scoped-models/main.dart';
+import '../models/product.dart';
+
 
 class ProductPage extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  final double price;
-  final String description;
+  final int productIndex;
 
-  ProductPage(this.title, this.imageUrl, this.price, this.description);
+  ProductPage(this.productIndex);
 
   // _showWarningDialog(BuildContext context) {
   //   showDialog(
@@ -45,17 +46,19 @@ class ProductPage extends StatelessWidget {
         Navigator.pop(context, false);
         return Future.value(false);
       },
-      child: Scaffold(
+      child: ScopedModelDescendant<MainModel>(builder: (BuildContext context, Widget child, MainModel model){
+        final Product product = model.allProducts[productIndex];
+        return Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: Text(product.title),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset(imageUrl),
+            Image.asset(product.image),
             Container(
               padding: EdgeInsets.all(10.0),
-              child: TitleDefault(title),
+              child: TitleDefault(product.title),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +74,7 @@ class ProductPage extends StatelessWidget {
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
-                Text('NGN' + price.toString(),
+                Text('NGN' + product.price.toString(),
                     style: TextStyle(fontFamily: 'Oswald', color: Colors.grey))
               ],
             ),
@@ -79,13 +82,14 @@ class ProductPage extends StatelessWidget {
               padding: EdgeInsets.all(10.0),
               alignment: Alignment.center,
               child: Text(
-                description,
+                product.description,
                 textAlign: TextAlign.center
               ),
             )
           ],
         ),
-      ),
+      );
+      },) 
     );
   }
 }

@@ -1,53 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/scoped-models/main.dart';
+
+import 'package:scoped_model/scoped_model.dart';
 
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
 import './address_tag.dart';
+import '../../models/product.dart';
+import '../../scoped-models/main.dart';
 
 class ProductCard extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final Product product;
   final int productIndex;
 
   ProductCard(this.product, this.productIndex);
+
+  Widget _buildActionButtons(BuildContext context) {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.info),
+          color: Theme.of(context).accentColor,
+          onPressed: () => Navigator.pushNamed<bool>(
+              context, '/product/' + productIndex.toString()),
+        ),
+        ScopedModelDescendant<MainModel>(
+          builder: (BuildContext context, Widget child, MainModel model) {
+            return IconButton(
+                icon: Icon(model.allProducts[productIndex].isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                color: Colors.red,
+                onPressed: () {
+                  model.selectProduct(productIndex);
+                  model.toggleFavouriteProduct(); 
+                });
+          },
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(product['image']),
+          Image.asset(product.image),
           Container(
             padding: EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TitleDefault(product['title']),
+                TitleDefault(product.title),
                 SizedBox(
                   width: 8.0,
                 ),
-                PriceTag(product['price'].toString())
+                PriceTag(product.price.toString())
               ],
             ),
           ),
-          AddressTag('Barige, Owotuuu ladiLak bus'),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.info),
-                color: Theme.of(context).accentColor,
-                onPressed: () => Navigator.pushNamed<bool>(
-                    context, '/product/' + productIndex.toString()),
-              ),
-              IconButton(
-                  icon: Icon(Icons.favorite_border),
-                  color: Colors.red,
-                  onPressed: () => Navigator.pushNamed<bool>(
-                        context,
-                        '/product/' + productIndex.toString(),
-                      ))
-            ],
-          )
+          AddressTag('Bariga, Owotuuu ladiLak bus'),
+          Text(product.userEmail),
+          _buildActionButtons(context)
         ],
       ),
     );
